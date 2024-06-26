@@ -1,0 +1,30 @@
+<!-- templates/index.html -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestor de Recetas</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <h1 class="mt-5">Gestor de Recetas</h1>
+        <a href="{{ url_for('rutas.agregar_receta_form') }}" class="btn btn-primary mb-3">Agregar Receta</a>
+        <div class="row">
+            {% for receta in recetas %}
+            <div class="col-md-4">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ receta['titulo'] }}</h5>
+                        <p class="card-text">{{ receta['descripcion'] }}</p>
+                        <p class="card-text"><strong>Ingredientes:</strong> {{ receta['ingredientes'] }}</p>
+                        <p class="card-text"><strong>Pasos:</strong> {{ receta['pasos'] }}</p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

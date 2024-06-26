@@ -1,28 +1,29 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, render_template, redirect, url_for
 from servicios.operaciones_recetas import agregar_receta, obtener_todas_recetas
 
 rutas = Blueprint('rutas', __name__)
 
+@rutas.route('/')
+def index():
+    """Muestra la página principal con todas las recetas."""
+    recetas = obtener_todas_recetas()
+    return render_template('index.html', recetas=recetas)
+
 @rutas.route('/recetas', methods=['POST'])
 def crear_receta():
     """Endpoint para agregar una nueva receta."""
-    datos = request.json
-    titulo = datos.get('titulo')
-    descripcion = datos.get('descripcion')
-    ingredientes = datos.get('ingredientes')
-    pasos = datos.get('pasos')
+    titulo = request.form['titulo']
+    descripcion = request.form['descripcion']
+    ingredientes = request.form['ingredientes']
+    pasos = request.form['pasos']
 
     try:
-        receta_id = agregar_receta(titulo, descripcion, ingredientes, pasos)
-        return jsonify({'mensaje': 'Receta agregada correctamente', 'id_receta': receta_id}), 201
+        agregar_receta(titulo, descripcion, ingredientes, pasos)
+        return redirect(url_for('rutas.index'))
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-@rutas.route('/recetas', methods=['GET'])
-def obtener_recetas():
-    """Endpoint para obtener todas las recetas."""
-    try:
-        recetas = obtener_todas_recetas()
-        return jsonify({'recetas': recetas}), 200
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
+@rutas.route('/agregar_receta')
+def agregar_receta_form():
+    """Muestra el formulario para agregar una nueva receta."""
+    return render_template('agregar_receta.html')
